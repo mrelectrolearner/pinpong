@@ -13,7 +13,7 @@ class Board{
 
     get elements(){
         let elements=this.bars;
-        elements.push(this.ball);
+        //elements.push(this.ball);
         return elements;
             
     
@@ -34,11 +34,15 @@ class Bar{
 }
 
     down(){
+        this.y +=this.speed
 
     }
 
     up() {
-        
+        this.y -=this.speed
+    }
+    toString(){
+        return "x: "+this.x+" y:"+this.y;
     }
 }
 
@@ -60,39 +64,55 @@ class BoardView{
         
     }
     drawElement(ctx,element) {
-        if(element !== null && element.hasOwnProperty("kind")){
+        
             switch(element.kind){
         
                 case "square":
                     ctx.fillRect(element.x,element.y,element.width,element.height)
                     break
             }
-        }
+        
 
-    } 
+    }  
+
+    clean( ){
+        this.ctx.clearRect(0,0,this.board.width,this.board.height)
+    }
+    play(){
+        this.clean()
+        this.draw()
+    }
 
 
 }
 
 
 
+let board=new Board(800,400);
+let bar=new Bar(20,100,40,100,board)
+let bar2=new Bar(720,100,40,100,board)
+let canvas=document.getElementById("canvas",board)
+let board_view=new BoardView(canvas,board);
 
 
+document.addEventListener("keydown", e=> {
+    if(e.key==="ArrowUp"){
+        bar.up()
+    }else if(e.key==="ArrowDown"){
+        bar.down();
+    }else if(e.key==="w"){
+        bar2.up()
+    }else if(e.key==="s"){
+        bar2.down();
+    }   
+    console.log(bar)
+})
 
 
-window.addEventListener("load",main)
-
-
-
-function main(){
-    
-    let board=new Board(800,400);
-    let bar=new Bar(20,100,40,100,board)
-    let bar2=new Bar(720,100,40,100,board)
-    let canvas=document.getElementById("canvas",board)
-    let board_view=new BoardView(canvas,board);
-    board_view.draw()
-
-    
-      
+window.requestAnimationFrame(controller)
+function controller() {
+    board_view.play()
+   
+    window.requestAnimationFrame(controller) 
 }
+
