@@ -13,7 +13,7 @@ class Board{
 
     get elements(){
         let elements=this.bars;
-        //elements.push(this.ball);
+        elements.push(this.ball);
         return elements;
             
     
@@ -46,6 +46,20 @@ class Bar{
     }
 }
 
+class Ball{
+    constructor(x,y,radius,board){
+        this.x=x
+        this.y=y
+        this.radius=radius
+        this.speed_y=0;
+        this.speed_x=3
+        this.board=board
+
+        board.ball=this
+        this.kind="circle"
+    }
+}
+
 class BoardView{
     constructor(canvas,board){
     this.canvas=canvas;
@@ -71,6 +85,17 @@ class BoardView{
                     ctx.fillRect(element.x,element.y,element.width,element.height)
                     break
             }
+
+            switch(element.kind){
+        
+                case "circle":
+                    ctx.beginPath()
+                    ctx.arc(element.x,element.y,element.radius,0,7)
+                    ctx.fill()
+                    ctx.closePath()
+                    break
+            }
+            
         
 
     }  
@@ -93,6 +118,7 @@ let bar=new Bar(20,100,40,100,board)
 let bar2=new Bar(720,100,40,100,board)
 let canvas=document.getElementById("canvas",board)
 let board_view=new BoardView(canvas,board);
+let ball=new Ball(350,100,10,board)
 
 
 document.addEventListener("keydown", e=> {
