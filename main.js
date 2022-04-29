@@ -8,11 +8,12 @@ class Board{
     this.game_over=false;
     this.bars=[];
     this.ball=null
+    this.playing=false
     }
 
 
     get elements(){
-        let elements=this.bars;
+        let elements=this.bars.map(bar=>{return bar});
         elements.push(this.ball);
         return elements;
             
@@ -54,9 +55,15 @@ class Ball{
         this.speed_y=0;
         this.speed_x=3
         this.board=board
+        this.direction=1
 
         board.ball=this
         this.kind="circle"
+    }
+
+    move(){
+        this.x+=(this.speed_x*this.direction)
+        this.y+=(this.speed_y)
     }
 }
 
@@ -104,8 +111,13 @@ class BoardView{
         this.ctx.clearRect(0,0,this.board.width,this.board.height)
     }
     play(){
-        this.clean()
-        this.draw()
+        if(this.board.playing){
+            this.clean()
+            this.draw()
+            this.board.ball.move()
+
+        }
+        
     }
 
 
@@ -123,18 +135,25 @@ let ball=new Ball(350,100,10,board)
 
 document.addEventListener("keydown", e=> {
     if(e.key==="ArrowUp"){
+        e.preventDefault();
         bar.up()
     }else if(e.key==="ArrowDown"){
+        e.preventDefault();
         bar.down();
     }else if(e.key==="w"){
+        e.preventDefault();
         bar2.up()
     }else if(e.key==="s"){
+        e.preventDefault();
         bar2.down();
-    }   
-    console.log(bar)
+
+    }else if(e.key==="Enter"){
+        board.playing=!board.playing
+    }
+    console.log(e.key)
 })
 
-
+board_view.draw();
 window.requestAnimationFrame(controller)
 function controller() {
     board_view.play()
